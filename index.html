@@ -66,14 +66,20 @@
   /* NAV */
   nav{
     position:sticky; top:0; z-index:50;
-    background:rgba(10,15,28,0.85);
-    backdrop-filter:blur(10px);
+    background:rgba(10,15,28,0.78);
+    backdrop-filter:blur(12px);
     border-bottom:1px solid var(--line);
+    transition:box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+  }
+  nav.scrolled{
+    box-shadow:0 8px 24px rgba(0,0,0,0.35);
+    border-bottom-color:var(--signal-dim);
+    background:rgba(10,15,28,0.92);
   }
   .nav-inner{
     max-width:var(--max);
     margin:0 auto;
-    padding:16px 24px;
+    padding:14px 24px;
     display:flex;
     justify-content:space-between;
     align-items:center;
@@ -81,11 +87,19 @@
   .nav-id{
     font-family:'Space Grotesk', sans-serif;
     font-weight:600;
-    font-size:0.95rem;
+    font-size:0.88rem;
+    display:inline-flex;
+    align-items:center;
+    padding:7px 14px 7px 10px;
+    border-radius:20px;
+    border:1px solid var(--line);
+    background:var(--surface);
+    transition:border-color 0.2s ease;
   }
+  .nav-id:hover{ border-color:var(--signal-dim); }
   .nav-links{
     display:flex;
-    gap:28px;
+    gap:30px;
     list-style:none;
     margin:0; padding:0;
     font-size:0.88rem;
@@ -93,9 +107,23 @@
   .nav-links a{
     text-decoration:none;
     color:var(--text-muted);
-    transition:color 0.15s ease;
+    transition:color 0.2s ease;
+    position:relative;
+    padding-bottom:4px;
+  }
+  .nav-links a::after{
+    content:'';
+    position:absolute;
+    left:0; bottom:0;
+    width:0; height:2px;
+    border-radius:2px;
+    background:linear-gradient(90deg, var(--signal), var(--signal-2));
+    transition:width 0.25s ease;
   }
   .nav-links a:hover{color:var(--text);}
+  .nav-links a:hover::after{ width:100%; }
+  .nav-links a.active{ color:var(--text); }
+  .nav-links a.active::after{ width:100%; }
   .status-dot{
     display:inline-block;
     width:7px; height:7px;
@@ -103,6 +131,11 @@
     background:var(--ok);
     margin-right:8px;
     box-shadow:0 0 0 3px rgba(95,211,163,0.15);
+    animation:dotpulse 2.4s ease-in-out infinite;
+  }
+  @keyframes dotpulse{
+    0%,100%{ box-shadow:0 0 0 3px rgba(95,211,163,0.15); }
+    50%{ box-shadow:0 0 0 6px rgba(95,211,163,0.08); }
   }
 
   /* HERO */
@@ -569,12 +602,12 @@
   <div class="nav-inner">
     <span class="nav-id mono"><span class="status-dot" aria-hidden="true"></span>md.aabid.hussain</span>
     <ul class="nav-links">
-      <li><a href="#about">About</a></li>
-      <li><a href="#experience">Experience</a></li>
-      <li><a href="#skills">Skills</a></li>
-      <li><a href="#certifications">Certs</a></li>
-      <li><a href="#projects">Projects</a></li>
-      <li><a href="#contact">Contact</a></li>
+      <li><a href="#about" data-nav-link>About</a></li>
+      <li><a href="#experience" data-nav-link>Experience</a></li>
+      <li><a href="#skills" data-nav-link>Skills</a></li>
+      <li><a href="#certifications" data-nav-link>Certs</a></li>
+      <li><a href="#projects" data-nav-link>Projects</a></li>
+      <li><a href="#contact" data-nav-link>Contact</a></li>
     </ul>
   </div>
 </nav>
@@ -910,5 +943,33 @@
   Deployed with care, one pipeline at a time.
 </footer>
 
+<script>
+  (function(){
+    var nav = document.querySelector('nav');
+    var links = document.querySelectorAll('[data-nav-link]');
+    var sections = Array.prototype.map.call(links, function(a){
+      return document.querySelector(a.getAttribute('href'));
+    });
+
+    function onScroll(){
+      if (window.scrollY > 12) { nav.classList.add('scrolled'); }
+      else { nav.classList.remove('scrolled'); }
+
+      var pos = window.scrollY + 120;
+      var current = sections[0];
+      sections.forEach(function(sec){
+        if (sec && sec.offsetTop <= pos) { current = sec; }
+      });
+      links.forEach(function(a){
+        var target = document.querySelector(a.getAttribute('href'));
+        if (target === current) { a.classList.add('active'); }
+        else { a.classList.remove('active'); }
+      });
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+</script>
 </body>
 </html>

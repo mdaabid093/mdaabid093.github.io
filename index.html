@@ -553,11 +553,13 @@
     .about-grid{grid-template-columns:1fr;}
     .skill-groups{grid-template-columns:1fr 1fr;}
     .cert-grid{grid-template-columns:1fr;}
-    .nav-links{gap:16px; font-size:0.8rem;}
+    .nav-inner{flex-direction:column; align-items:flex-start; gap:10px; padding:14px 20px;}
+    .nav-links{gap:10px 16px; font-size:0.8rem; flex-wrap:wrap; width:100%;}
   }
   @media (max-width:480px){
     .skill-groups{grid-template-columns:1fr;}
     .hero{padding:80px 0 60px;}
+    .nav-links{gap:8px 12px; font-size:0.76rem;}
   }
 </style>
 </head>
